@@ -25,6 +25,12 @@ source ./deviceinfo
 deviceinfo_kernel_image_name="Image.lz4" ./build/make-bootimage.sh "$TMPDOWN" \
    "$TMPDOWN/KERNEL_OBJ" "$TMPDOWN/halium-boot-ramdisk.img" "$TMP/partitions/boot-lz4.img" "$TMP/system"
 
+# Replace generated archives from earlier runs. The generic build may have left
+# either name as a hard link or symlink, so remove both before writing them.
+rm -f "$OUT/device_${deviceinfo_codename}_usrmerge.tar.xz" \
+    "$OUT/device_${deviceinfo_codename}.tar.xz"
 tar -cJf "$OUT/device_${deviceinfo_codename}_usrmerge.tar.xz" -C "$TMP" --owner=root --group=root partitions/ system/
-# Keep the generic builder's expected name pointed at this freshly generated tarball.
-ln -sfn "device_${deviceinfo_codename}_usrmerge.tar.xz" "$OUT/device_${deviceinfo_codename}.tar.xz"
+# Keep both expected names as regular, independent archives so a later generic
+# build cannot turn the usrmerge name into a self-referential symlink.
+cp "$OUT/device_${deviceinfo_codename}_usrmerge.tar.xz" \
+    "$OUT/device_${deviceinfo_codename}.tar.xz"

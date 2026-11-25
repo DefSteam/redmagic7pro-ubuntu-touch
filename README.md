@@ -64,4 +64,4 @@ Keep a copy of the phone's stock boot image and recovery procedure so you can re
 
 ## Kernel configuration note
 
-The active setting is in halium-gki/deviceinfo. It uses gki_defconfig followed by the halium-new.config fragment. The working tree previously named arch.config, but that file was absent; only arch.config.unused was present. The build script patches the pinned generic build tools to merge halium-new.config with the kernel's merge_config.sh before compiling.
+The active setting is in halium-gki/deviceinfo. It uses gki_defconfig followed by the halium-new.config fragment. The working tree previously named arch.config, but that file was absent; only arch.config.unused was present. The build script patches the pinned generic build tools to merge halium-new.config with the kernel's merge_config.sh before compiling. The boot command line also follows the NX709J Ubuntu `header-ub` settings, including the `_b` slot suffix used by the installer. The boot image header version is 4, matching the device's Android 12 boot image format.

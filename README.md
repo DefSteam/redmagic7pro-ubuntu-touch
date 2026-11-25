@@ -38,6 +38,22 @@ The completed images are written to:
 
 Generated downloads, intermediate files, and images remain under halium-gki and are excluded from Git.
 
+### Rebuild only changed parts
+
+After a successful full build has prepared the tool and dependency caches, use the partial build script when changing one area:
+
+    ./scripts/build-parts.sh kernel
+    ./scripts/build-parts.sh boot
+    ./scripts/build-parts.sh overlay
+    ./scripts/build-parts.sh images
+
+- `kernel` recompiles the kernel and refreshes the dependent boot images, device archive, and Ubuntu Touch images.
+- `boot` uses the cached kernel objects to regenerate `boot.img` and `boot-lz4.img`. Use this after changing boot header settings in `halium-gki/deviceinfo` or files under `halium-gki/ramdisk-overlay/`.
+- `overlay` rebuilds the device archive from the current `halium-gki/overlay/` files and cached kernel modules, then refreshes the Ubuntu Touch images. It does not compile the kernel.
+- `images` rebuilds `rootfs.img` and `system.img` from the existing device archive, without rebuilding the kernel or device archive.
+
+The `boot`, `overlay`, and `images` targets need the cached outputs from a prior full build. If those files are missing, run `./scripts/build-ubuntu-touch.sh` first. Run `./scripts/build-parts.sh --help` for the target summary.
+
 ## Install
 
 1. Back up the phone and unlock the bootloader using instructions for the exact NX709J variant. Bootloader unlocking normally factory-resets the device, so treat all data as at risk. Expect an unlocked-bootloader warning every time the phone starts. While unlocked, the phone accepts software that is not signed by its original trusted key, which reduces boot integrity protection. Some integrity-sensitive apps, DRM features, OTA updates, or warranty coverage may be affected; details vary by firmware, app, and region. See the [Android bootloader state documentation](https://source.android.com/docs/security/features/verifiedboot/device-state) and [unlocking guidance](https://source.android.com/docs/core/architecture/bootloader/locking_unlocking).

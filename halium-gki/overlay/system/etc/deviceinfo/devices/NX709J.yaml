@@ -1,0 +1,30 @@
+NX709J:
+    Name: nx709j
+    PrettyName: "Redmagic 7 pro"
+    DeviceType: phone
+    GridUnit: 18
+    SupportedOrientations:
+        - Portrait
+        - InvertedPortrait
+        - Landscape
+        - InvertedLandscape
+    PrimaryOrientation: Portrait
+    PortraitOrientation: Portrait
+    InvertedPortraitOrientation: InvertedPortrait
+    LandscapeOrientation: Landscape
+    InvertedLandscapeOrientation: InvertedLandscape
+
+    # Mir
+    #MirAndroidPlatformClientEglFlush: <comma-separated-list/"all">
+    #MirAndroidPlatformClientFenceSync: <comma-separated-list/"all">
+    #MirAndroidPlatformServerBackpressure: <boolean>
+    #MirAndroidPlatformServerClearFbFence: <boolean>
+    #MirAndroidPlatformServerEglSync: <boolean>
+    #MirAndroidPlatformServerPartialUpdates: <boolean>
+
+    # Lomiri
+    supportsRebootToRecovery: false
+
+    # Ayatana-indicator-power
+    FlashlightSysfsPath: /sys/class/leds/led:torch_0/brightness
+    FlashlightSwitchPath: /sys/class/leds/led:switch_0/brightness

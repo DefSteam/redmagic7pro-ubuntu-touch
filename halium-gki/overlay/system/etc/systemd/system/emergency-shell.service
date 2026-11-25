@@ -1,0 +1,15 @@
+[Unit]
+Description=Emergency OpenSSH Server
+After=usb-gadget.service
+Wants=usb-gadget.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2
+RuntimeDirectory=sshd
+RuntimeDirectoryMode=0755
+ExecStart=/usr/sbin/sshd -D -o PermitRootLogin=yes -o PasswordAuthentication=yes
+
+[Install]
+WantedBy=multi-user.target

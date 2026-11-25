@@ -1,0 +1,37 @@
+diff --git a/build-kernel.sh b/build-kernel.sh
+--- a/build-kernel.sh
++++ b/build-kernel.sh
+@@ -52,6 +52,16 @@
+ cd "$KERNEL_DIR"
+ make O="$OUT" $MAKEOPTS $deviceinfo_kernel_defconfig
++    if [ -n "${deviceinfo_kernel_config_fragment:-}" ]; then
++        CONFIG_FRAGMENT="$HERE/$deviceinfo_kernel_config_fragment"
++        if [ ! -r "$CONFIG_FRAGMENT" ]; then
++            echo "Kernel config fragment not found: $CONFIG_FRAGMENT" >&2
++            exit 1
++        fi
++        "$KERNEL_DIR/scripts/kconfig/merge_config.sh" -m -O "$OUT" \
++            "$OUT/.config" "$CONFIG_FRAGMENT"
++        make O="$OUT" $MAKEOPTS olddefconfig
++    fi
+ if ${MENUCONFIG:-false}; then
+     make O="$OUT" $MAKEOPTS menuconfig
+ fi
+ make O="$OUT" $MAKEOPTS -j$(nproc --all)
+diff --git a/prepare-fake-ota.sh b/prepare-fake-ota.sh
+--- a/prepare-fake-ota.sh
++++ b/prepare-fake-ota.sh
+@@ -143,3 +143,3 @@
+-# Enable SSH and USB tethering, and disable secure ADBD, for debugging in devel-flashable builds
++# Enable USB tethering and SSH with authentication required.
+ echo "start on startup" > system/etc/init/ssh.override
+-echo "exec /usr/sbin/sshd -D -o PasswordAuthentication=yes -o PermitEmptyPasswords=yes" >> system/etc/init/ssh.override
++echo "exec /usr/sbin/sshd -D -o PasswordAuthentication=no -o PermitEmptyPasswords=no -o PermitRootLogin=no" >> system/etc/init/ssh.override
+@@ -150,5 +150,4 @@
+ cat >system/etc/default/adbd <<EOF
+-# This file is overwritten by prepare-fake-ota.sh to disable ADBD's host key
+-# verification ("secure ADBD") by default, to aid in debugging.
+-ADBD_SECURE=0
++# Keep Android Debug Bridge host authentication enabled.
++ADBD_SECURE=1
+ EOF

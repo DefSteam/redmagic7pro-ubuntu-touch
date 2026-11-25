@@ -1,0 +1,15 @@
+/halium-gki/build/
+/halium-gki/workdir/
+/halium-gki/out/
+/halium-gki/ota/
+/halium-gki/images/
+/halium-gki/partitions/
+/halium-gki/log/
+/log/
+*.img
+*.img.*
+*.tar
+*.tar.*
+*.log
+/halium-gki/overlay/system/etc/ssh/ssh_host_*
+/halium-gki/overlay/system/root/.ssh/authorized_keys

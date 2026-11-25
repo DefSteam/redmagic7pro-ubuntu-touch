@@ -1,0 +1,12 @@
+# Qualcomm Adreno GPU & Memory Allocators
+KERNEL=="kgsl-3d0", MODE="0666"
+KERNEL=="ion", MODE="0666"
+SUBSYSTEM=="dma_heap", MODE="0666"
+
+# Android Binder IPC Nodes
+KERNEL=="binder", MODE="0666"
+KERNEL=="vndbinder", MODE="0666"
+KERNEL=="hwbinder", MODE="0666"
+
+# DRM / Display Nodes
+SUBSYSTEM=="drm", MODE="0666"

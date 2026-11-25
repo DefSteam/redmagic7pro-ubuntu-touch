@@ -1,0 +1,32 @@
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index a1cbba338..76c9f7115 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -976,2 +976,2 @@ struct task_struct {
+-	struct sysv_sem			sysvsem;
+-	struct sysv_shm			sysvshm;
++	// struct sysv_sem			sysvsem;
++	// struct sysv_shm			sysvshm;
+@@ -1386,0 +1387,5 @@ struct task_struct {
++
++#ifdef CONFIG_SYSVIPC
++	ANDROID_KABI_USE(6, struct sysv_sem sysvsem);
++	_ANDROID_KABI_REPLACE(ANDROID_KABI_RESERVE(7); ANDROID_KABI_RESERVE(8), struct sysv_shm sysvshm);
++#else
+@@ -1389,0 +1395 @@ struct task_struct {
++#endif
+diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
+index 6d63a5260..b96fe706b 100644
+--- a/include/linux/sched/user.h
++++ b/include/linux/sched/user.h
+@@ -26 +26 @@ struct user_struct {
+-	unsigned long mq_bytes;	/* How many bytes can be allocated to mqueue? */
++	//unsigned long mq_bytes;	/* How many bytes can be allocated to mqueue? */
+@@ -46,0 +47,5 @@ struct user_struct {
++#if defined(CONFIG_POSIX_MQUEUE)
++	ANDROID_KABI_USE(1, unsigned long mq_bytes);
++	ANDROID_KABI_RESERVE(2);
++	ANDROID_OEM_DATA_ARRAY(1, 2);
++#else
+@@ -49,0 +55 @@ struct user_struct {
++#endif

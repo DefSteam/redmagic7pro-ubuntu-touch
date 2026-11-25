@@ -1,0 +1,59 @@
+[Unit]
+Description=ConfigFS USB Setup Daemon
+DefaultDependencies=no
+After=local-fs.target
+IgnoreOnIsolate=yes
+
+[Service]
+Type=simple
+StandardOutput=file:/var/log/usb-gadget-debug.log
+StandardError=file:/var/log/usb-gadget-debug.log
+ExecStart=/bin/sh -c '\
+mount -o remount,rw / 2>/dev/null || true; \
+mkdir -p /config /sys/kernel/config 2>/dev/null || true; \
+mount -t configfs none /sys/kernel/config 2>/dev/null || mount -t configfs none /config 2>/dev/null || true; \
+if [ -d "/sys/kernel/config/usb_gadget" ]; then \
+    GADGET_DIR="/sys/kernel/config/usb_gadget"; \
+else \
+    GADGET_DIR="/config/usb_gadget"; \
+fi; \
+LOCAL_IP=192.168.2.15; \
+echo "[USB-SETUP] Using gadget dir: $$GADGET_DIR"; \
+if [ -d /sys/bus/platform/drivers/msm-dwc3 ]; then \
+    for device in /sys/bus/platform/drivers/msm-dwc3/*/; do \
+        [ -f "$$device/mode" ] && echo -n "peripheral" > "$$device/mode"; \
+    done; \
+    sleep 1; \
+fi; \
+if [ -d "$$GADGET_DIR" ]; then \
+    mkdir -p $$GADGET_DIR/g1 $$GADGET_DIR/g1/strings/0x409; \
+    echo -n "0x18D1" > $$GADGET_DIR/g1/idVendor; \
+    echo -n "0xD001" > $$GADGET_DIR/g1/idProduct; \
+    echo -n "Ubuntu Touch" > $$GADGET_DIR/g1/strings/0x409/manufacturer; \
+    echo -n "GKI Gadget" > $$GADGET_DIR/g1/strings/0x409/product; \
+    for function in ncm.usb0 rndis.usb0 rndis_bam.rndis; do \
+        if mkdir $$GADGET_DIR/g1/functions/$$function 2>/dev/null; then \
+            NETWORK_FUNCTION=$$function; \
+            break; \
+        fi; \
+    done; \
+    mkdir -p $$GADGET_DIR/g1/configs/c.1/strings/0x409; \
+    echo -n "rndis" > $$GADGET_DIR/g1/configs/c.1/strings/0x409/configuration; \
+    [ -n "$$NETWORK_FUNCTION" ] && ln -sf $$GADGET_DIR/g1/functions/$$NETWORK_FUNCTION $$GADGET_DIR/g1/configs/c.1/; \
+    UDC_DEV=$$(ls /sys/class/udc 2>/dev/null | grep -v dummy | head -n 1); \
+    echo "[USB-SETUP] Binding UDC: $$UDC_DEV"; \
+    [ -n "$$UDC_DEV" ] && echo "$$UDC_DEV" > $$GADGET_DIR/g1/UDC; \
+fi; \
+USB_IFACE=notfound; \
+ip link set rndis0 up 2>/dev/null && USB_IFACE=rndis0; \
+[ "$$USB_IFACE" = "notfound" ] && ip link set usb0 up 2>/dev/null && USB_IFACE=usb0; \
+echo "[USB-SETUP] Interface selected: $$USB_IFACE"; \
+[ "$$USB_IFACE" != "notfound" ] && ip addr add $${LOCAL_IP}/24 dev $$USB_IFACE 2>/dev/null || true; \
+sync; \
+exec sleep infinity'
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

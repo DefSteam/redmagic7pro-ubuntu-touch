@@ -35,3 +35,18 @@ diff --git a/prepare-fake-ota.sh b/prepare-fake-ota.sh
 +# Keep Android Debug Bridge host authentication enabled.
 +ADBD_SECURE=1
  EOF
+diff --git a/system-image-from-ota.sh b/system-image-from-ota.sh
+--- a/system-image-from-ota.sh
++++ b/system-image-from-ota.sh
+@@ -237,8 +237,8 @@
+                     if [ ! -z "$LOOPDEV" ]; then
+                         sudo umount "$SYSTEM_MOUNTPOINT"
+                         rmdir "$SYSTEM_MOUNTPOINT"
+                     else
+-                        mke2fs -t ext4 -O \^metadata_csum "$OUT/rootfs.img" ${deviceinfo_system_partition_size:-3584M} -d "$SYSTEM_MOUNTPOINT"
+-                        rm -rf "$SYSTEM_MOUNTPOINT"
++                        sudo mke2fs -t ext4 -O \^metadata_csum "$OUT/rootfs.img" ${deviceinfo_system_partition_size:-3584M} -d "$SYSTEM_MOUNTPOINT"
++                        sudo rm -rf "$SYSTEM_MOUNTPOINT"
+                     fi
+                     # Create fastboot flashable image
+                     img2simg "$OUT/rootfs.img" "$OUT/system.img"

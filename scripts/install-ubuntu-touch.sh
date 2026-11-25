@@ -21,6 +21,12 @@ adb get-state >/dev/null 2>&1 || {
     exit 1
 }
 
+data_fstype="$(adb shell cat /proc/mounts | tr -d '\r' | awk '$2 == "/data" { print $3; exit }')"
+[ "$data_fstype" = "f2fs" ] || {
+    printf 'ERROR: Recovery must mount userdata as F2FS at /data before installing. Format Data as F2FS in OrangeFox, reboot recovery, and retry.\n' >&2
+    exit 1
+}
+
 printf 'This installs Ubuntu Touch on a RedMagic 7 Pro (NX709J).\n'
 printf 'It replaces /data/ubuntu.img and flashes boot_b. It does not wipe the rest of /data.\n'
 read -r -p 'Type INSTALL to continue: ' confirmation

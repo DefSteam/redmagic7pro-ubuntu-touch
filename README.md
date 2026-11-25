@@ -66,17 +66,20 @@ The `boot`, `overlay`, and `images` targets need the cached outputs from a prior
        fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img
 
    The Fastboot options go before `flash`.
-4. Boot a recovery that mounts or can access /data and provides ADB. Connect the phone over USB.
+4. Install the Android 12 GSI `lineage-19.1-20250606-UNOFFICIAL-arm64_bvN.img` to `system_b` (slot B). The installer flashes `boot_b`, and the initramfs uses `system_b`. This GSI is a prerequisite for the tested port and is not included in this repository.
+5. In OrangeFox, format the userdata partition as **F2FS**. Use **Format Data** (type `yes`), not only the ordinary Wipe action. This erases userdata. After formatting, reboot back into recovery and keep `/data` mounted as F2FS. Avoid booting Android between formatting userdata and installing Ubuntu Touch, because the Android fstab enables metadata encryption.
+6. Boot a recovery that mounts or can access /data and provides ADB. Connect the phone over USB.
    Make sure /data has at least 4 GB of free space for rootfs.img.
-5. Run the install script from this repository:
+7. Run the install script from this repository:
 
        ./scripts/install-ubuntu-touch.sh
 
-6. Review the confirmation prompt and type INSTALL.
+8. Review the confirmation prompt and type INSTALL.
 
-The script copies rootfs.img to /data/ubuntu.img, reboots to Fastboot, checks the reported product, flashes boot.img to boot_b, and reboots. It replaces /data/ubuntu.img and boot_b; it does not erase the rest of /data. Fastboot may report `taro` on an NX709J; because that platform identifier is shared by multiple phone models, the script requires you to confirm `NX709J` before it flashes. Verify the exact model before confirming. Unknown product values or a missing confirmation stop the script before flashing. Do not use this installer for another device or variant.
+The script verifies that recovery has `/data` mounted as F2FS, copies rootfs.img to /data/ubuntu.img, reboots to Fastboot, checks the reported product, flashes boot.img to boot_b, and reboots. It replaces /data/ubuntu.img and boot_b; it does not erase the rest of /data. Fastboot may report `taro` on an NX709J; because that platform identifier is shared by multiple phone models, the script requires you to confirm `NX709J` before it flashes. Verify the exact model before confirming. Unknown product values or a missing confirmation stop the script before flashing. Do not use this installer for another device or variant.
 
 Before any device command, the script verifies that `rootfs.img` is a readable ext filesystem containing `/init`. If validation fails, do not install that image; rebuild it first.
+This describes the Ubuntu `rootfs.img` file. The phone's userdata partition must be F2FS.
 
 Keep a copy of the phone's stock boot image and recovery procedure so you can restore Android if this experimental port does not boot. The install flow follows the Halium 9+ layout used by the device configuration: the boot image is flashed and the Ubuntu Touch rootfs image is stored in userdata. See the [UBports standalone kernel build guide](https://docs.ubports.com/en/latest/porting/build_and_boot/standalone_kernel_build.html) and [Halium installation guide](https://docs.ubports.com/en/latest/porting/build_and_boot/Halium_install.html) for background.
 

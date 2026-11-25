@@ -1,3 +1,5 @@
+> **Warning:** This is an experimental port. I take no responsibility for damage to any device or loss of data. Follow this guide at your own risk. Before starting, back up all data and device-specific information you can, including the exact model and variant, serial number, IMEIs, and any modem or calibration details. Keep these records securely offline; do not post them publicly. Save a stock firmware image and a recovery procedure for your exact device as well.
+
 # Ubuntu Touch on RedMagic 7 Pro (NX709J)
 
 This repository contains the device port sources and scripts to build and install an experimental Ubuntu Touch image for the Nubia RedMagic 7 Pro, device codename NX709J. It does not include prebuilt system images, build logs, downloaded toolchains, or machine-specific credentials.
@@ -38,14 +40,23 @@ Generated downloads, intermediate files, and images remain under halium-gki and 
 
 ## Install
 
-1. Back up the phone and confirm that the bootloader is unlocked.
-2. Boot a recovery that mounts or can access /data and provides ADB. Connect the phone over USB.
+1. Back up the phone and unlock the bootloader using instructions for the exact NX709J variant. Bootloader unlocking normally factory-resets the device, so treat all data as at risk. Expect an unlocked-bootloader warning every time the phone starts. While unlocked, the phone accepts software that is not signed by its original trusted key, which reduces boot integrity protection. Some integrity-sensitive apps, DRM features, OTA updates, or warranty coverage may be affected; details vary by firmware, app, and region. See the [Android bootloader state documentation](https://source.android.com/docs/security/features/verifiedboot/device-state) and [unlocking guidance](https://source.android.com/docs/core/architecture/bootloader/locking_unlocking).
+
+   **Do not relock the bootloader while Ubuntu Touch or other modified partitions are installed.** A locked bootloader verifies the installed software. Relocking with unsigned, mismatched, or incomplete firmware can make the phone fail verification and become unbootable, and the lock operation can erase data. Only consider relocking after restoring the complete, exact stock firmware for this device variant and following a recovery procedure verified for that firmware. A failed recovery may require a full firmware restore.
+
+2. Obtain `vbmeta.img` from stock firmware for the exact NX709J device variant. This repository does not build or include that image.
+3. Boot the phone into Fastboot and, from the directory containing `vbmeta.img`, run:
+
+       fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img
+
+   The Fastboot options go before `flash`.
+4. Boot a recovery that mounts or can access /data and provides ADB. Connect the phone over USB.
    Make sure /data has at least 4 GB of free space for rootfs.img.
-3. Run the install script from this repository:
+5. Run the install script from this repository:
 
        ./scripts/install-ubuntu-touch.sh
 
-4. Review the confirmation prompt and type INSTALL.
+6. Review the confirmation prompt and type INSTALL.
 
 The script copies rootfs.img to /data/ubuntu.img, reboots to Fastboot, checks that the device identifies as NX709J, flashes boot.img to boot_b, and reboots. It replaces /data/ubuntu.img and boot_b; it does not erase the rest of /data. Do not use this installer for another device or variant. If Fastboot cannot confirm the device model, the script stops before flashing.
 

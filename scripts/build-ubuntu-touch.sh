@@ -17,8 +17,15 @@ die() {
 patch_is_applied() {
     local repo_dir="$1"
     local patch_file="$2"
-    (cd "$repo_dir" && patch --dry-run --silent --reverse --batch -p1 < "$patch_file") \
-        >/dev/null 2>&1
+    local output
+    # GNU patch can return success for an unapplied reverse dry run.
+    if ! output="$(cd "$repo_dir" && LC_ALL=C patch --dry-run --silent --reverse --batch -p1 < "$patch_file" 2>&1)"; then
+        return 1
+    fi
+    case "$output" in
+        *"Unreversed patch detected"*) return 1 ;;
+        *) return 0 ;;
+    esac
 }
 
 apply_patch_if_missing() {

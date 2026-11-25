@@ -66,7 +66,7 @@ The `boot`, `overlay`, and `images` targets need the cached outputs from a prior
        fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img
 
    The Fastboot options go before `flash`.
-4. Install the Android 12 GSI `lineage-19.1-20250606-UNOFFICIAL-arm64_bvN.img` to `system_b` (slot B). The installer flashes `boot_b`, and the initramfs uses `system_b`. This GSI is a prerequisite for the tested port and is not included in this repository.
+4. Download [`lineage-19.1-20250606-UNOFFICIAL-arm64_bvN.img.gz` from SourceForge](https://sourceforge.net/projects/andyyan-gsi/files/lineage-19.x/lineage-19.1-20250606-UNOFFICIAL-arm64_bvN.img.gz/download) and decompress it to the `.img` file. Install the Android 12 GSI to `system_b` (slot B). The installer flashes `boot_b`, and the initramfs uses `system_b`. This GSI is not included in this repository.
 5. In OrangeFox, format the userdata partition as **F2FS**. Use **Format Data** (type `yes`), not only the ordinary Wipe action. This erases userdata. After formatting, reboot back into recovery and keep `/data` mounted as F2FS. Avoid booting Android between formatting userdata and installing Ubuntu Touch, because the Android fstab enables metadata encryption.
 6. Boot a recovery that mounts or can access /data and provides ADB. Connect the phone over USB.
    Make sure /data has at least 4 GB of free space for rootfs.img.

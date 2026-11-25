@@ -54,7 +54,3 @@ Keep a copy of the phone's stock boot image and recovery procedure so you can re
 ## Kernel configuration note
 
 The active setting is in halium-gki/deviceinfo. It uses gki_defconfig followed by the halium-new.config fragment. The working tree previously named arch.config, but that file was absent; only arch.config.unused was present. The build script patches the pinned generic build tools to merge halium-new.config with the kernel's merge_config.sh before compiling.
-
-## Credentials and debug access
-
-No SSH host keys or authorized_keys files are included. The build patch keeps SSH password authentication disabled and keeps ADB host authentication enabled. The installer does not enable force-SSH. If you need SSH access, add your own public key locally; the repository ignores the personal key and host-key paths so they are not committed accidentally.

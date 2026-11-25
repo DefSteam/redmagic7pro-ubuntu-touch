@@ -16,7 +16,7 @@ The port has reached the Ubuntu Touch welcome/setup screen with graphics working
 On Ubuntu, install the common host tools with:
 
     sudo apt update
-    sudo apt install git curl wget tar xz-utils build-essential python3 fakeroot patch adb fastboot
+    sudo apt install git curl wget tar xz-utils build-essential python3 fakeroot patch adb fastboot e2fsprogs
 
 The image conversion step may ask for sudo access to mount a temporary loop image.
 
@@ -75,6 +75,8 @@ The `boot`, `overlay`, and `images` targets need the cached outputs from a prior
 6. Review the confirmation prompt and type INSTALL.
 
 The script copies rootfs.img to /data/ubuntu.img, reboots to Fastboot, checks the reported product, flashes boot.img to boot_b, and reboots. It replaces /data/ubuntu.img and boot_b; it does not erase the rest of /data. Fastboot may report `taro` on an NX709J; because that platform identifier is shared by multiple phone models, the script requires you to confirm `NX709J` before it flashes. Verify the exact model before confirming. Unknown product values or a missing confirmation stop the script before flashing. Do not use this installer for another device or variant.
+
+Before any device command, the script verifies that `rootfs.img` is a readable ext filesystem containing `/init`. If validation fails, do not install that image; rebuild it first.
 
 Keep a copy of the phone's stock boot image and recovery procedure so you can restore Android if this experimental port does not boot. The install flow follows the Halium 9+ layout used by the device configuration: the boot image is flashed and the Ubuntu Touch rootfs image is stored in userdata. See the [UBports standalone kernel build guide](https://docs.ubports.com/en/latest/porting/build_and_boot/standalone_kernel_build.html) and [Halium installation guide](https://docs.ubports.com/en/latest/porting/build_and_boot/Halium_install.html) for background.
 

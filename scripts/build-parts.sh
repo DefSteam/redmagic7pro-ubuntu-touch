@@ -88,6 +88,7 @@ build_ubuntu_touch_images() {
     printf '\n== Building Ubuntu Touch images ==\n'
     "$BUILD_TOOLS_DIR/prepare-fake-ota.sh" "$tarball" "$HALIUM_DIR/ota"
     "$BUILD_TOOLS_DIR/system-image-from-ota.sh" "$HALIUM_DIR/ota/ubuntu_command" "$HALIUM_DIR/images"
+    bash "$ROOT_DIR/scripts/validate-rootfs.sh" "$HALIUM_DIR/images/rootfs.img"
     printf '\nImages are in %s/images\n' "$HALIUM_DIR"
 }
 

@@ -14,6 +14,7 @@ done
 
 [ -s "$BOOT_IMAGE" ] || { printf 'ERROR: Missing image: %s\n' "$BOOT_IMAGE" >&2; exit 1; }
 [ -s "$ROOTFS_IMAGE" ] || { printf 'ERROR: Missing image: %s\n' "$ROOTFS_IMAGE" >&2; exit 1; }
+bash "$ROOT_DIR/scripts/validate-rootfs.sh" "$ROOTFS_IMAGE"
 
 adb get-state >/dev/null 2>&1 || {
     printf 'ERROR: No authorized ADB device. Boot the RedMagic 7 Pro into recovery and enable ADB.\n' >&2

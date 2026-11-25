@@ -125,5 +125,6 @@ printf '\n== Building Ubuntu Touch images ==\n'
 "$BUILD_TOOLS_DIR/prepare-fake-ota.sh" \
     out/device_nx709j_usrmerge.tar.xz ota
 "$BUILD_TOOLS_DIR/system-image-from-ota.sh" ota/ubuntu_command images
+bash "$ROOT_DIR/scripts/validate-rootfs.sh" "$HALIUM_DIR/images/rootfs.img"
 
 printf '\nBuild complete. Images are in %s/images\n' "$HALIUM_DIR"
